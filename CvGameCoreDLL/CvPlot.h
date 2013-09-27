@@ -40,7 +40,11 @@ typedef bool (*ConstPlotUnitFunc)( const CvUnit* pUnit, int iData1, int iData2);
 typedef bool (*PlotUnitFunc)(CvUnit* pUnit, int iData1, int iData2);
 
 // please don't change this
-#define NUM_INVISIBLE_TYPES 1
+// lol, I change this, man
+
+/* Cloak & Dagger */
+
+#define NUM_INVISIBLE_TYPES 2
 
 typedef FFastVector<IDInfo, true, c_eCiv5GameplayDLL, 0> IDInfoVector;
 
