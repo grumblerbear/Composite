@@ -477,6 +477,9 @@ protected:
 	static int lIsLargerCivThan(lua_State* L);
 
 	static int lIsRangedSupportFire(lua_State* L);
+
+	/* Custom lua methods */
+	static int lSetActivityType(lua_State* L);
 };
 
 

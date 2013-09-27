@@ -4464,3 +4464,16 @@ int CvLuaUnit::lIsRangedSupportFire(lua_State* L)
 	lua_pushboolean(L, bResult);
 	return 1;
 }
+
+/* Custom lua methods */
+
+//------------------------------------------------------------------------------
+//void CvUnit::SetActivityType(ActivityTypes eNewValue)
+int CvLuaUnit::lSetActivityType( lua_State* L ) {
+	CvUnit* pkUnit = GetInstance( L );
+	const ActivityTypes iActivityType = (ActivityTypes) lua_tointeger( L, 2 );
+	if( pkUnit ) {
+		pkUnit->SetActivityType( iActivityType );
+	}
+	return 1;
+}
