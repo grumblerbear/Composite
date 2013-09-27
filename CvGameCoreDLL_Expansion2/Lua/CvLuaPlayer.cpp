@@ -971,6 +971,11 @@ void CvLuaPlayer::PushMethods(lua_State* L, int t)
 	Method(HasTurnTimerExpired);
 
 	Method(HasUnitOfClassType);
+
+	/* Real Science */
+
+	Method(GetResearchStorage);
+	Method(SetResearchStorage);
 }
 //------------------------------------------------------------------------------
 void CvLuaPlayer::HandleMissingInstance(lua_State* L)
