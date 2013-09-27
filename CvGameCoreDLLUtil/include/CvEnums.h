@@ -1064,6 +1064,8 @@ enum GameOptionTypes
 
 	// WARNING: Do not use these enums to index into the GameOptionInfo table, they will not line up!
 	//          Nor should use use the index of a GameOptionInfo entry as a GameOptionTypes enum for use with SetGameOptions!
+	GAMEOPTION_WARS_OF_RELIGION_OFF,
+	GAMEOPTION_TECH_SAVING,
 	GAMEOPTION_NO_CITY_RAZING,
 	GAMEOPTION_NO_BARBARIANS,
 	GAMEOPTION_RAGING_BARBARIANS,

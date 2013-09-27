@@ -75,6 +75,13 @@ public:
 	void gameStartInit();
 	void uninit();
 
+	/* Real Science */
+
+	bool isTechNotificationSeen () const;
+	void setTechNotificationSeen (bool newValue);
+	int GetResearchStorage () const;
+	void SetResearchStorage (int newValue);
+
 	void initFreeState(CvGameInitialItemsOverrides& kOverrides);
 	void initFreeUnits(CvGameInitialItemsOverrides& kOverrides);
 	void addFreeUnitAI(UnitAITypes eUnitAI, int iCount);
@@ -1633,6 +1640,12 @@ protected:
 
 	FAutoVariable<bool, CvPlayer> m_bHasBetrayedMinorCiv;
 	FAutoVariable<bool, CvPlayer> m_bAlive;
+
+	/* Real Science */
+
+	FAutoVariable<bool, CvPlayer> m_bTechNotificationSeen;
+    FAutoVariable<int, CvPlayer> m_iResearchStorage;
+
 	FAutoVariable<bool, CvPlayer> m_bEverAlive;
 	bool m_bBeingResurrected;
 	FAutoVariable<bool, CvPlayer> m_bTurnActive;

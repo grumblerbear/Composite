@@ -186,6 +186,7 @@ int CvLuaEnums::pRegister(lua_State* L)
 	//GameOptionTypes
 	EnumStart(L, "GameOptionTypes");
 	RegisterEnum(NO_GAMEOPTION);
+	RegisterEnum(GAMEOPTION_TECH_SAVING);
 	RegisterEnum(GAMEOPTION_NO_CITY_RAZING);
 	RegisterEnum(GAMEOPTION_NO_BARBARIANS);
 	RegisterEnum(GAMEOPTION_RAGING_BARBARIANS);

@@ -302,6 +302,12 @@ CvPlayer::CvPlayer() :
 	, m_uiStartTime("CvPlayer::m_uiStartTime", m_syncArchive)  // XXX save these?
 	, m_bHasBetrayedMinorCiv("CvPlayer::m_bHasBetrayedMinorCiv", m_syncArchive)
 	, m_bAlive("CvPlayer::m_bAlive", m_syncArchive)
+
+	/* Real Science */
+
+	, m_bTechNotificationSeen("CvPlayer::m_bTechNotificationSeen", m_syncArchive)
+    , m_iResearchStorage("CvPlayer::m_iResearchStorage", m_syncArchive)
+
 	, m_bEverAlive("CvPlayer::m_bEverAlive", m_syncArchive)
 	, m_bBeingResurrected(false)
 	, m_bTurnActive("CvPlayer::m_bTurnActive", m_syncArchive, false, true)
@@ -892,6 +898,12 @@ void CvPlayer::uninit()
 
 	m_bHasBetrayedMinorCiv = false;
 	m_bAlive = false;
+
+	/* Real Science */
+
+	m_bTechNotificationSeen = false;
+    m_iResearchStorage = 0;
+
 	m_bEverAlive = false;
 	m_bBeingResurrected = false;
 	m_bTurnActive = false;
@@ -4435,12 +4447,14 @@ void CvPlayer::chooseTech(int iDiscover, const char* strText, TechTypes iTechJus
 		}
 		else if(strText == 0 || strText[0] == 0)
 		{
-			CvString strBuffer = GetLocalizedText("TXT_KEY_NOTIFICATION_NEW_RESEARCH");
-			CvString strSummary = GetLocalizedText("TXT_KEY_NOTIFICATION_SUMMARY_NEW_RESEARCH");
-			CvNotifications* pNotifications = GetNotifications();
-			if(pNotifications)
-			{
-				pNotifications->Add(NOTIFICATION_TECH, strBuffer, strSummary, -1, -1, iDiscover, iTechJustDiscovered);
+			if ( !isTechNotificationSeen() ) {
+				CvString strBuffer = GetLocalizedText("TXT_KEY_NOTIFICATION_NEW_RESEARCH");
+				CvString strSummary = GetLocalizedText("TXT_KEY_NOTIFICATION_SUMMARY_NEW_RESEARCH");
+				CvNotifications* pNotifications = GetNotifications();
+				if(pNotifications)
+				{
+					pNotifications->Add(NOTIFICATION_TECH, strBuffer, strSummary, -1, -1, iDiscover, iTechJustDiscovered);
+				}
 			}
 		}
 		else
@@ -12638,7 +12652,14 @@ int CvPlayer::getOverflowResearch() const
 //	--------------------------------------------------------------------------------
 void CvPlayer::setOverflowResearch(int iNewValue)
 {
-	setOverflowResearchTimes100(iNewValue*100);
+	if ( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+        int ResearchStorage = GetResearchStorage() + (iNewValue / 100);
+        SetResearchStorage( ResearchStorage );
+
+        m_iOverflowResearch = 0;
+    } else {
+        m_iOverflowResearch = iNewValue;
+    }
 }
 
 
@@ -17164,6 +17185,12 @@ void CvPlayer::popResearch(TechTypes eTech)
 		GC.GetEngineUserInterface()->setDirty(GameData_DIRTY_BIT, true);
 		GC.GetEngineUserInterface()->setDirty(Score_DIRTY_BIT, true);
 	}
+
+	if ( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+        if ( GetID() == GC.getGame().getActivePlayer() ) {
+            setTechNotificationSeen( false );
+        }
+    }
 }
 
 
@@ -17805,7 +17832,7 @@ void CvPlayer::doResearch()
 				chooseTech();
 			}
 
-			if(GC.getGame().getElapsedGameTurns() > 4)
+			if( GC.getGame().getElapsedGameTurns() > 4 && !isHuman() )
 			{
 				AI_chooseResearch();
 
@@ -17818,11 +17845,23 @@ void CvPlayer::doResearch()
 		{
 			int iOverflow = (GetScienceTimes100()) / std::max(1, calculateResearchModifier(eCurrentTech));
 			changeOverflowResearchTimes100(iOverflow);
+
+			if( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+                int ResearchStorage = GetResearchStorage() + (GetScienceTimes100() / 100);
+                SetResearchStorage( ResearchStorage );
+            }
 		}
 		else
 		{
 			iOverflowResearch = (getOverflowResearchTimes100() * calculateResearchModifier(eCurrentTech)) / 100;
 			setOverflowResearch(0);
+
+			if( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+	            int ResearchStorage = GetResearchStorage() * 100;
+	            iOverflowResearch = iOverflowResearch + ResearchStorage;
+	            SetResearchStorage( 0 );
+	        }
+
 			if(GET_TEAM(getTeam()).GetTeamTechs())
 			{
 				int iBeakersTowardsTechTimes100 = GetScienceTimes100() + iOverflowResearch;
@@ -20259,6 +20298,12 @@ void CvPlayer::Read(FDataStream& kStream)
 
 	kStream >> m_bHasBetrayedMinorCiv;
 	kStream >> m_bAlive;
+
+	/* Real Science */
+
+	kStream >> m_bTechNotificationSeen;
+    kStream >> m_iResearchStorage;
+
 	kStream >> m_bEverAlive;
 	if (uiVersion >= 44)
 	{
@@ -21021,6 +21066,12 @@ void CvPlayer::Write(FDataStream& kStream) const
 
 	kStream << m_bHasBetrayedMinorCiv;
 	kStream << m_bAlive;
+
+	/* Real Science */
+
+	kStream << m_bTechNotificationSeen;
+    kStream << m_iResearchStorage;
+
 	kStream << m_bEverAlive;
 	kStream << m_bBeingResurrected;
 	kStream << m_bTurnActive;
@@ -23270,4 +23321,23 @@ bool CancelActivePlayerEndTurn()
 		return false;
 	}
 	return true;
+}
+
+/* Real Science */
+
+int CvPlayer::GetResearchStorage() const
+{
+	return m_iResearchStorage;
+}
+void CvPlayer::SetResearchStorage(int newValue)
+{
+	m_iResearchStorage = newValue;
+}
+bool CvPlayer::isTechNotificationSeen() const
+{
+	return m_bTechNotificationSeen;
+}
+void CvPlayer::setTechNotificationSeen(bool newValue)
+{
+	m_bTechNotificationSeen = newValue;
 }

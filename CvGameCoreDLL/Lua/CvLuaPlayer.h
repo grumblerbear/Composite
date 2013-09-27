@@ -39,6 +39,11 @@ protected:
 	//! Protected Lua call to register all player instances.
 	static int pRegister(lua_State* L);
 
+	/* Real Science */
+
+	static int lGetResearchStorage(lua_State* L);
+    static int lSetResearchStorage(lua_State* L);
+
 	static int lInitCity(lua_State* L);
 	static int lAcquireCity(lua_State* L);
 	static int lKillCities(lua_State* L);

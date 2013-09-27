@@ -8248,3 +8248,25 @@ int CvLuaPlayer::lHasUnitOfClassType(lua_State* L)
 	lua_pushboolean(L, bResult);
 	return 1;
 }
+
+/* Real Science*/
+
+//int CvPlayer::GetResearchStorage() const
+int CvLuaPlayer::lGetResearchStorage(lua_State* L)
+{
+	CvPlayer* pkPlayer = GetInstance(L);
+
+	const int lResearchStorage = pkPlayer->GetResearchStorage();
+
+	lua_pushinteger(L, lResearchStorage);
+	return 1;
+}
+//void CvPlayer::SetResearchStorage(int newValue)
+int CvLuaPlayer::lSetResearchStorage(lua_State* L)
+{
+	CvPlayer* pkPlayer = GetInstance(L);
+	const int iNewValue = lua_tointeger(L, 2);
+
+	pkPlayer->SetResearchStorage(iNewValue);
+	return 1;
+}

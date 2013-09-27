@@ -450,6 +450,7 @@ int CvNotifications::Add(NotificationTypes eNotificationType, const char* strMes
 
 	switch (newNotification.m_eNotificationType)
 	{
+	case NOTIFICATION_TECH:
 	case NOTIFICATION_POLICY:
 	case NOTIFICATION_UNIT_PROMOTION:
 		{
@@ -493,6 +494,14 @@ void CvNotifications::Dismiss (int iLookupIndex, bool bUserInvoked)
 
 			switch (m_aNotifications[iIndex].m_eNotificationType)
 			{
+			case NOTIFICATION_TECH:
+                if ( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+                    if ( m_ePlayer == GC.getGame().getActivePlayer() && bUserInvoked ) {
+                        GET_PLAYER(m_ePlayer).setTechNotificationSeen( true );
+                    }
+                } else {
+                    break;
+                }
 			case NOTIFICATION_POLICY:
 				{
 					if (m_ePlayer == GC.getGame().getActivePlayer() && bUserInvoked)
@@ -531,13 +540,15 @@ bool CvNotifications::MayUserDismiss(int iLookupIndex)
 			{
 			case NOTIFICATION_DIPLO_VOTE:
 			case NOTIFICATION_PRODUCTION:
-			case NOTIFICATION_TECH:
 			case NOTIFICATION_FREE_TECH:
 			case NOTIFICATION_FREE_POLICY:
 			case NOTIFICATION_FREE_GREAT_PERSON:
 				return false;
 				break;
 
+			case NOTIFICATION_TECH:
+				return GC.getGame().isOption( GAMEOPTION_TECH_SAVING );
+				break;
 			case NOTIFICATION_POLICY:
 				if (GC.getGame().isOption(GAMEOPTION_POLICY_SAVING))
 				{

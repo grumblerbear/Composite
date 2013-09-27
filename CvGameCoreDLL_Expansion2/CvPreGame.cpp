@@ -41,6 +41,8 @@ const char* ConvertGameOptionTypeToString(GameOptionTypes eOption)
 	{
 	case GAMEOPTION_WARS_OF_RELIGION_OFF:
 		return "GAMEOPTION_WARS_OF_RELIGION_OFF";
+	case GAMEOPTION_TECH_SAVING:
+        return "GAMEOPTION_TECH_SAVING";
 	case GAMEOPTION_NO_CITY_RAZING:
 		return "GAMEOPTION_NO_CITY_RAZING";
 	case GAMEOPTION_NO_BARBARIANS:
