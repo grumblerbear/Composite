@@ -1319,12 +1319,13 @@ ReligionTypes CvGameReligions::GetFounderBenefitsReligion(PlayerTypes ePlayer) c
 
 	eReligion = GetReligionCreatedByPlayer(ePlayer);
 
-	if(IsEligibleForFounderBenefits(eReligion, ePlayer))
-	{
-		return eReligion;
+	CvGame& kGame = GC.getGame();
+	if ( kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) ) {
+		if( IsEligibleForFounderBenefits( eReligion, ePlayer ) ) {
+			return eReligion;
+		}
 	}
-
-	return NO_RELIGION;
+	return eReligion;
 }
 
 /// Number of religions founded so far (does not include pantheons)
@@ -2852,12 +2853,17 @@ void CvCityReligions::RemoveFormerPantheon()
 void CvCityReligions::RemoveOtherReligions(ReligionTypes eReligion, PlayerTypes eResponsiblePlayer)
 {
 	ReligionTypes eOldMajorityReligion = GetReligiousMajority();
+	ReligionTypes eHolyCityReligion = NO_RELIGION;
 
 	// Copy list
 	ReligionInCityList tempList;
 	ReligionInCityList::iterator it;
 	for(it = m_ReligionStatus.begin(); it != m_ReligionStatus.end(); it++)
 	{
+		// Holy city
+		if ( it->m_bFoundedHere ) {
+			eHolyCityReligion = it->m_eReligion;
+		}
 		tempList.push_back(*it);
 	}
 
@@ -2870,6 +2876,17 @@ void CvCityReligions::RemoveOtherReligions(ReligionTypes eReligion, PlayerTypes 
 		if(it->m_eReligion == NO_RELIGION || it->m_eReligion == eReligion)
 		{
 			m_ReligionStatus.push_back(*it);
+		}
+	}
+
+	// Push back holy religion
+	CvGame& kGame = GC.getGame();
+	if ( !kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) )
+	{
+		// Reestablish Holy City religion
+		if ( eHolyCityReligion != NO_RELIGION ) {
+			CvReligionInCity holyCityReligion( eHolyCityReligion, true/*bFoundedHere*/, 0, 0 );
+			m_ReligionStatus.push_back( holyCityReligion );
 		}
 	}
 

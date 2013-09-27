@@ -9930,19 +9930,83 @@ int CvPlayer::GetTotalFaithPerTurn() const
 
 //	--------------------------------------------------------------------------------
 /// Faith per turn from Cities
-int CvPlayer::GetFaithPerTurnFromCities() const
-{
+int CvPlayer::GetFaithPerTurnFromCities() const {
 	int iFaithPerTurn = 0;
 
-	// Add in culture from Cities
-	const CvCity* pLoopCity;
-	int iLoop;
-	for(pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-	{
-		iFaithPerTurn += pLoopCity->GetFaithPerTurn();
-	}
+ 	CvGameReligions* pReligions = GC.getGame().GetGameReligions();
 
-	return iFaithPerTurn;
+ 	CvGame& kGame = GC.getGame();
+ 	if ( kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) ) {
+ 		// Add faith from your Cities
+ 		const CvCity* pLoopCity;
+ 		int iLoop;
+ 		for( pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop) ) {
+ 			iFaithPerTurn += pLoopCity->GetFaithPerTurn();
+ 		}
+
+ 		return iFaithPerTurn;
+ 	}
+
+ 	// Founder beliefs
+ 	ReligionTypes eThisReligion = pReligions->GetFounderBenefitsReligion(GetID());
+ 	if ( eThisReligion != NO_RELIGION ) {
+ 		// Loop through all the players
+ 		for ( int iI = 0; iI < MAX_PLAYERS; iI++ ) {
+ 			CvPlayer& kPlayer = GET_PLAYER( (PlayerTypes) iI );
+ 			if ( kPlayer.isAlive() ) {
+ 				// Loop through each of their cities
+ 				int iLoop;
+ 				int eMajorityReligion;
+ 				CvCity* pLoopCity;
+ 				for ( pLoopCity = kPlayer.firstCity(&iLoop); pLoopCity != NULL; pLoopCity = kPlayer.nextCity(&iLoop) ) {
+ 				    eMajorityReligion = pLoopCity->GetCityReligions()->GetReligiousMajority();
+ 					if ( eMajorityReligion == eThisReligion ) {
+ 						iFaithPerTurn += int( pLoopCity->GetFaithPerTurn() * 0.75 );
+ 					} else if ( eMajorityReligion <= RELIGION_PANTHEON && pLoopCity->getOwner() == GetID() ) {
+ 						iFaithPerTurn += pLoopCity->GetFaithPerTurn();
+ 					}
+ 				}
+ 			}
+ 		}
+ 	} else {
+ 		// Add faith from your Cities
+ 		const CvCity* pLoopCity;
+ 		int iLoop;
+ 		for ( pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop) ) {
+ 			iFaithPerTurn += pLoopCity->GetFaithPerTurn();
+ 		}
+ 	}
+
+ 	// Add in faith from Holy Cities
+ 	const CvCity* pLoopCity;
+ 	int iLoop;
+ 	for ( pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop) ) {
+ 		if ( pLoopCity->GetCityReligions()->IsHolyCityAnyReligion()) {
+
+ 			ReligionInCityList::iterator religionIt;
+
+ 			for ( religionIt = pLoopCity->GetCityReligions()->m_ReligionStatus.begin(); religionIt != pLoopCity->GetCityReligions()->m_ReligionStatus.end(); ++religionIt) {
+ 				if ( pLoopCity->GetCityReligions()->IsHolyCityForReligion( religionIt->m_eReligion ) ) {
+ 					// Loop through all the players
+ 					for (int iI = 0; iI < MAX_PLAYERS; iI++ ) {
+ 						CvPlayer& kPlayer = GET_PLAYER( (PlayerTypes) iI );
+ 						if ( kPlayer.isAlive() ) {
+ 							// Loop through each of their cities
+ 							int iLoop;
+ 							CvCity* pLoop2City;
+ 							for ( pLoop2City = kPlayer.firstCity(&iLoop); pLoop2City != NULL; pLoop2City = kPlayer.nextCity(&iLoop) ) {
+ 								if( pLoop2City->GetCityReligions()->GetReligiousMajority() == religionIt->m_eReligion ) {
+ 									iFaithPerTurn += int( ceil( pLoop2City->GetFaithPerTurn() * 0.25 ) );
+ 								}
+ 							}
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 	}
+
+ 	return iFaithPerTurn;
 }
 
 //	--------------------------------------------------------------------------------
