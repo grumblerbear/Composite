@@ -468,6 +468,10 @@ void CvLuaUnit::PushMethods(lua_State* L, int t)
 	Method(IsLargerCivThan);
 
 	Method(IsRangedSupportFire);
+
+	/* Custom lua methods */
+
+	Method(SetActivityType);
 }
 //------------------------------------------------------------------------------
 const char* CvLuaUnit::GetTypeName()

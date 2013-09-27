@@ -445,6 +445,10 @@ void CvLuaUnit::PushMethods(lua_State* L, int t)
 	Method(SetDeployFromOperationTurn);
 	Method(IsHigherTechThan);
 	Method(IsLargerCivThan);
+
+	/* Custom lua methods */
+
+	Method(SetActivityType);
 }
 //------------------------------------------------------------------------------
 const char* CvLuaUnit::GetTypeName()
@@ -4262,5 +4266,18 @@ int CvLuaUnit::lIsLargerCivThan(lua_State* L)
 	const bool bResult = pkUnit->IsLargerCivThan(pkOtherUnit);
 
 	lua_pushboolean(L, bResult);
+	return 1;
+}
+
+/* Custom lua methods */
+
+//------------------------------------------------------------------------------
+//void CvUnit::SetActivityType(ActivityTypes eNewValue)
+int CvLuaUnit::lSetActivityType( lua_State* L ) {
+	CvUnit* pkUnit = GetInstance( L );
+	const ActivityTypes iActivityType = (ActivityTypes) lua_tointeger( L, 2 );
+	if( pkUnit ) {
+		pkUnit->SetActivityType( iActivityType );
+	}
 	return 1;
 }

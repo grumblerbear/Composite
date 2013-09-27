@@ -434,6 +434,10 @@ protected:
 	static int lExecuteSpecialExploreMove(lua_State* L);
 
 	static int lSetDeployFromOperationTurn(lua_State* L);
+
+	/* Custom lua methods */
+
+	static int lSetActivityType(lua_State* L);
 };
 
 

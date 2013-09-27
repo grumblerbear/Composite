@@ -454,6 +454,10 @@ protected:
 	static int lSetDeployFromOperationTurn(lua_State* L);
 	static int lIsHigherTechThan(lua_State* L);
 	static int lIsLargerCivThan(lua_State* L);
+
+	/* Custom lua methods */
+
+	static int lSetActivityType(lua_State* L);
 };
 
 

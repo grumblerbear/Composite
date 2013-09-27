@@ -427,6 +427,10 @@ void CvLuaUnit::PushMethods(lua_State* L, int t)
 	Method(ExecuteSpecialExploreMove);
 
 	Method(SetDeployFromOperationTurn);
+
+	/* Custom lua methods */
+
+	Method(SetActivityType);
 }
 //------------------------------------------------------------------------------
 const char* CvLuaUnit::GetTypeName()
@@ -4072,4 +4076,17 @@ int CvLuaUnit::lSetDeployFromOperationTurn(lua_State* L)
 
 	pkUnit->SetDeployFromOperationTurn(iTurn);
 	return 0;
+}
+
+/* Custom lua methods */
+
+//------------------------------------------------------------------------------
+//void CvUnit::SetActivityType(ActivityTypes eNewValue)
+int CvLuaUnit::lSetActivityType( lua_State* L ) {
+	CvUnit* pkUnit = GetInstance( L );
+	const ActivityTypes iActivityType = (ActivityTypes) lua_tointeger( L, 2 );
+	if( pkUnit ) {
+		pkUnit->SetActivityType( iActivityType );
+	}
+	return 1;
 }
