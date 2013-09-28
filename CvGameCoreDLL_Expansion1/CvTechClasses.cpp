@@ -1057,6 +1057,12 @@ bool CvPlayerTechs::CanEverResearch(TechTypes eTech) const
 		return false;
 	}
 
+	if ( GC.getGame().isOption( GAMEOPTION_COMPETE_ERAS ) ) {
+		if (pkTechInfo->GetEra() > m_pPlayer->GetCurrentEra()) {
+			return false;
+		}
+	}
+
 	if(m_pPlayer->getCivilizationInfo().isCivilizationDisableTechs(eTech))
 	{
 		return false;
