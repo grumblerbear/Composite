@@ -2411,6 +2411,11 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestVis
 	BuildingTypes ePrereqBuilding;
 	int iI;
 
+	int iProduction = m_pCityBuildings->GetBuildingProduction(eBuilding);
+	if (GC.getGame().isOption( GAMEOPTION_WONDER_SAVING ) && iProduction > 0) {
+		bContinue = true;
+	}
+
 	if(eBuilding == NO_BUILDING)
 	{
 		return false;
@@ -2498,7 +2503,7 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestVis
 		{
 			if(isWorldWonderClass(kBuildingClassInfo))
 			{
-				if(isWorldWondersMaxed())
+				if(isWorldWondersMaxed() && (!GC.getGame().isOption( GAMEOPTION_WONDER_SAVING ) || !bContinue))
 				{
 					return false;
 				}
@@ -12750,7 +12755,7 @@ bool CvCity::doCheckProduction()
 		{
 			const BuildingClassTypes eExpiredBuildingClass = (BuildingClassTypes)(pkExpiredBuildingInfo->GetBuildingClassType());
 
-			if(thisPlayer.isProductionMaxedBuildingClass(eExpiredBuildingClass))
+			if(thisPlayer.isProductionMaxedBuildingClass(eExpiredBuildingClass, GC.getGame().isOption( GAMEOPTION_WONDER_SAVING )))
 			{
 				// Beaten to a world wonder by someone?
 				if(isWorldWonderClass(pkExpiredBuildingInfo->GetBuildingClassInfo()))

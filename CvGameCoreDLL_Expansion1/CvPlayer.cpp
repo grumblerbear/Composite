@@ -6382,7 +6382,7 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestV
 		}
 	}
 
-	if(GC.getGame().isBuildingClassMaxedOut(eBuildingClass))
+	if(GC.getGame().isBuildingClassMaxedOut(eBuildingClass) && (!GC.getGame().isOption( GAMEOPTION_WONDER_SAVING ) || !bContinue))
 	{
 		return false;
 	}
@@ -6463,7 +6463,7 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestV
 		if(GC.getGame().isBuildingClassMaxedOut(eBuildingClass, (currentTeam.getBuildingClassMaking(eBuildingClass) + ((bContinue) ? -1 : 0))))
 		{
 			GC.getGame().BuildCannotPerformActionHelpText(toolTipSink, "TXT_KEY_NO_ACTION_GAME_COUNT_MAX", "", "", kBuildingClass.getMaxGlobalInstances());
-			if(toolTipSink == NULL)
+			if(toolTipSink == NULL && (!GC.getGame().isOption( GAMEOPTION_WONDER_SAVING ) || !bContinue))
 				return false;
 		}
 
