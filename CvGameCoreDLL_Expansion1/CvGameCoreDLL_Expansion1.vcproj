@@ -538,6 +538,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CvTargeting.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CvTeam.cpp"
 				>
 				<FileConfiguration
@@ -929,6 +933,10 @@
 			</File>
 			<File
 				RelativePath=".\CvTacticalAnalysisMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CvTargeting.h"
 				>
 			</File>
 			<File
