@@ -10910,7 +10910,7 @@ bool CvCity::doCheckProduction()
 		{
 			const BuildingClassTypes eExpiredBuildingClass = (BuildingClassTypes) (pkExpiredBuildingInfo->GetBuildingClassType());
 
-			if (thisPlayer.isProductionMaxedBuildingClass(eExpiredBuildingClass))
+			if (thisPlayer.isProductionMaxedBuildingClass(eExpiredBuildingClass, GC.getGame().isOption( GAMEOPTION_WONDER_SAVING )))
 			{
 				// Beaten to a world wonder by someone?
 				if (isWorldWonderClass(pkExpiredBuildingInfo->GetBuildingClassInfo()))
