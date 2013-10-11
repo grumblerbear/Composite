@@ -1970,7 +1970,7 @@ void CvTeamTechs::SetResearchProgressTimes100(TechTypes eIndex, int iNewValue, P
 
 		if(iOverflow >= 0)
 		{
-			GET_PLAYER(ePlayer).changeOverflowResearchTimes100(iOverflow);
+			GET_PLAYER(ePlayer).changeOverflowResearchTimes100(iOverflow/100);
 			m_pTeam->setHasTech(eIndex, true, ePlayer, true, true);
 			SetNoTradeTech(eIndex, true);
 

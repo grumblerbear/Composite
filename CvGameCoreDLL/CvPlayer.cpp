@@ -3701,12 +3701,14 @@ void CvPlayer::chooseTech(int iDiscover, const char* strText, TechTypes iTechJus
 	}
 	else if(strText == 0 || strText[0] == 0)
 	{
-		CvString strBuffer = GetLocalizedText("TXT_KEY_NOTIFICATION_NEW_RESEARCH");
-		CvString strSummary = GetLocalizedText("TXT_KEY_NOTIFICATION_SUMMARY_NEW_RESEARCH");
-		CvNotifications* pNotifications = GetNotifications();
-		if(pNotifications)
-		{
-			pNotifications->Add(NOTIFICATION_TECH, strBuffer, strSummary, -1, -1, iDiscover, iTechJustDiscovered);
+		if ( !isTechNotificationSeen() ) {
+			CvString strBuffer = GetLocalizedText("TXT_KEY_NOTIFICATION_NEW_RESEARCH");
+			CvString strSummary = GetLocalizedText("TXT_KEY_NOTIFICATION_SUMMARY_NEW_RESEARCH");
+			CvNotifications* pNotifications = GetNotifications();
+			if(pNotifications)
+			{
+				pNotifications->Add(NOTIFICATION_TECH, strBuffer, strSummary, -1, -1, iDiscover, iTechJustDiscovered);
+			}
 		}
 	}
 	else
@@ -10885,14 +10887,7 @@ int CvPlayer::getOverflowResearch() const
 //	--------------------------------------------------------------------------------
 void CvPlayer::setOverflowResearch(int iNewValue)
 {
-	if ( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
-        int ResearchStorage = GetResearchStorage() + (iNewValue / 100);
-        SetResearchStorage( ResearchStorage );
-
-		setOverflowResearchTimes100(0);
-    } else {
-        setOverflowResearchTimes100(iNewValue*100);
-    }
+    setOverflowResearchTimes100(iNewValue*100);
 }
 
 
@@ -10913,8 +10908,15 @@ int CvPlayer::getOverflowResearchTimes100() const
 //	--------------------------------------------------------------------------------
 void CvPlayer::setOverflowResearchTimes100(int iNewValue)
 {
-	m_iOverflowResearch = iNewValue;
-	CvAssert(getOverflowResearchTimes100() >= 0);
+	if ( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+        int ResearchStorage = GetResearchStorage() + (iNewValue);
+        SetResearchStorage( ResearchStorage );
+
+		m_iOverflowResearch = 0;
+    } else {
+		m_iOverflowResearch = iNewValue;
+		CvAssert(getOverflowResearchTimes100() >= 0);
+    }
 }
 
 
@@ -15867,7 +15869,13 @@ void CvPlayer::doResearch()
 		else
 		{
 			iOverflowResearch = (getOverflowResearchTimes100() * calculateResearchModifier(eCurrentTech)) / 100;
+			if( GC.getGame().isOption( GAMEOPTION_TECH_SAVING ) ) {
+	            int ResearchStorage = GetResearchStorage() * 100;
+	            iOverflowResearch = iOverflowResearch + ResearchStorage;
+	            SetResearchStorage( 0 );
+	        }
 			setOverflowResearch(0);
+
 			if (GET_TEAM(getTeam()).GetTeamTechs())
 				GET_TEAM(getTeam()).GetTeamTechs()->ChangeResearchProgressTimes100(eCurrentTech, (GetScienceTimes100() + iOverflowResearch), GetID());
 		}
@@ -17835,6 +17843,11 @@ void CvPlayer::Read(FDataStream& kStream)
 	uint uiVersion;
 	kStream >> uiVersion;
 
+	/* Real Science */
+
+	kStream >> m_bTechNotificationSeen;
+    kStream >> m_iResearchStorage;
+
 	kStream >> m_iStartingX;
 	kStream >> m_iStartingY;
 	kStream >> m_iTotalPopulation;
@@ -18529,6 +18542,11 @@ void CvPlayer::Write(FDataStream& kStream) const
 {
 	//Save version number.  THIS MUST BE FIRST!!
 	kStream << g_CurrentCvPlayerVersion;
+
+	/* Real Science */
+
+	kStream << m_bTechNotificationSeen;
+    kStream << m_iResearchStorage;
 
 	kStream << m_iStartingX;
 	kStream << m_iStartingY;
