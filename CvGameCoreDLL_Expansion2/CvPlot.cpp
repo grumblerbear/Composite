@@ -10571,23 +10571,3 @@ void CvPlot::updateImpassable()
 		}
 	}
 }
-
-//	-----------------------------------------------------------------------------------------------
-// Unit is another religion
-inline static bool isReligionEnemy( const CvUnit* pEnemyUnit, TeamTypes eOtherTeam, const CvUnit* pUnit ) {
-	if( pEnemyUnit->canCoexistWithEnemyUnit( eOtherTeam ) ) {
-		return false;
-	}
-	ReligionTypes eEnemyReligion = pEnemyUnit->GetReligionData()->GetReligion();
-	ReligionTypes eThisReligion = pUnit->GetReligionData()->GetReligion();
-
-	UnitTypes eMissionaryType = (UnitTypes) GC.getInfoTypeForString( "UNIT_MISSIONARY", true );
-	UnitTypes eInquisitorType = (UnitTypes) GC.getInfoTypeForString( "UNIT_INQUISITOR", true );
-
-	if ( pUnit->getUnitType() == eInquisitorType && pEnemyUnit->getUnitType() == eMissionaryType ) {
-		if ( eEnemyReligion > NO_RELIGION && eThisReligion > NO_RELIGION && eEnemyReligion != eThisReligion ) {
-			return true;
-		}
-	}
-	return false;
-}

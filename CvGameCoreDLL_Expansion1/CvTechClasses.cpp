@@ -1353,7 +1353,7 @@ int CvPlayerTechs::GetResearchTurnsLeftTimes100(TechTypes eTech, bool bOverflow)
 				if((iI == m_pPlayer->GetID()) || kPlayer.GetPlayerTechs()->GetCurrentResearch() == eTech)
 				{
 					iResearchRate += kPlayer.GetScienceTimes100();
-					iOverflow += (kPlayer.getOverflowResearch() * m_pPlayer->calculateResearchModifier(eTech)) / 100;
+					iOverflow += ((kPlayer.getOverflowResearch() + kPlayer.GetResearchStorage()) * m_pPlayer->calculateResearchModifier(eTech)) / 100;
 				}
 			}
 		}
