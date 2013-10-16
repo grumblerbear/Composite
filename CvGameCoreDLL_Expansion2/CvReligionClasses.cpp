@@ -1486,7 +1486,7 @@ ReligionTypes CvGameReligions::GetFounderBenefitsReligion(PlayerTypes ePlayer) c
 	eReligion = GetReligionCreatedByPlayer(ePlayer);
 
 	CvGame& kGame = GC.getGame();
-	if ( kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) ) {
+	if ( kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) || !gDLL->IsModActivated( CIV5_MOD_WARS_OF_RELIGION_MODID ) ) {
 		if( IsEligibleForFounderBenefits( eReligion, ePlayer ) ) {
 			return eReligion;
 		}
@@ -3403,7 +3403,7 @@ void CvCityReligions::RemoveOtherReligions(ReligionTypes eReligion, PlayerTypes 
 
 	// Push back holy religion
 	CvGame& kGame = GC.getGame();
-	if ( !kGame.isOption( GAMEOPTION_IMMORTAL_HOLY_CITIES_OFF ) )
+	if ( !kGame.isOption( GAMEOPTION_IMMORTAL_HOLY_CITIES_OFF ) && gDLL->IsModActivated( CIV5_MOD_WARS_OF_RELIGION_MODID ) )
 	{
 		// Reestablish Holy City religion
 		if ( eHolyCityReligion != NO_RELIGION ) {

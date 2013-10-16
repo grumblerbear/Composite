@@ -46,6 +46,11 @@ const char* const CIV5_DLC_04_SCENARIO_MODID = "daf6f887-3614-4169-a0e5-3ac9bd4e
 const char* const CIV5_DLC_05_SCENARIO_MODID = "24081928-4703-4845-8b9c-c1468a8cacf2";
 const char* const CIV5_DLC_06_SCENARIO_MODID = "2968ab37-29a3-4de7-8b84-ece688231e40";
 
+const char* const CIV5_MOD_WARS_OF_RELIGION_MODID = "e50c6e60-4616-439f-ac87-ff8fde2d133a";
+const char* const CIV5_MOD_CLOAK_AND_DAGGER_MODID = "68e3f7e3-85e7-40e4-97de-0fdcd63db479";
+const char* const CIV5_MOD_REAL_SCIENCE_MODID = "91e418e0-9b69-4658-903a-e9d5a9b8b696";
+const char* const CIV5_MOD_WONDERFULL_MODID = "275dcac9-99eb-4035-a32a-8e4a672e7b53";
+
 const char* const CIV5_XP1_SCENARIO1_MODID = "8f9d820d-e336-4208-891d-50fdd968cc40";	//Into the Renaissance
 const char* const CIV5_XP1_SCENARIO2_MODID = "76d702e9-8b28-429b-a97d-f84388f548c5";	//Fall of Rome
 const char* const CIV5_XP1_SCENARIO3_MODID = "b103d2e0-3aab-40d7-a2f3-375d2eabfcaf";	//Empires of the Smoky Skies

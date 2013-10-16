@@ -9979,7 +9979,7 @@ int CvPlayer::GetFaithPerTurnFromCities() const {
  	CvGameReligions* pReligions = GC.getGame().GetGameReligions();
 
  	CvGame& kGame = GC.getGame();
- 	if ( kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) ) {
+ 	if ( kGame.isOption( GAMEOPTION_WARS_OF_RELIGION_OFF ) || !gDLL->IsModActivated( CIV5_MOD_WARS_OF_RELIGION_MODID ) ) {
  		// Add faith from your Cities
  		const CvCity* pLoopCity;
  		int iLoop;
