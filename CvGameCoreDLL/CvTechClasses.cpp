@@ -1285,7 +1285,7 @@ int CvPlayerTechs::GetResearchTurnsLeftTimes100(TechTypes eTech, bool bOverflow)
 				if ((iI == m_pPlayer->GetID()) || kPlayer.GetPlayerTechs()->GetCurrentResearch() == eTech)
 				{
 					iResearchRate += kPlayer.GetScienceTimes100();
-					iOverflow += (kPlayer.getOverflowResearch() * m_pPlayer->calculateResearchModifier(eTech)) / 100;
+					iOverflow += ((kPlayer.getOverflowResearch() + kPlayer.GetResearchStorage()) * m_pPlayer->calculateResearchModifier(eTech)) / 100;
 				}
 			}
 		}
@@ -1770,7 +1770,7 @@ void CvTeamTechs::SetResearchProgressTimes100(TechTypes eIndex, int iNewValue, P
 
 		if (iOverflow >= 0)
 		{
-			GET_PLAYER(ePlayer).changeOverflowResearchTimes100(iOverflow);
+			GET_PLAYER(ePlayer).changeOverflowResearchTimes100(iOverflow/100);
 			m_pTeam->setHasTech(eIndex, true, ePlayer, true, true);
 			SetNoTradeTech(eIndex, true);
 

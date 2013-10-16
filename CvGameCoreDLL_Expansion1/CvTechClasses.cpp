@@ -1057,12 +1057,6 @@ bool CvPlayerTechs::CanEverResearch(TechTypes eTech) const
 		return false;
 	}
 
-	if ( GC.getGame().isOption( GAMEOPTION_COMPETE_ERAS ) ) {
-		if (pkTechInfo->GetEra() > m_pPlayer->GetCurrentEra()) {
-			return false;
-		}
-	}
-
 	if(m_pPlayer->getCivilizationInfo().isCivilizationDisableTechs(eTech))
 	{
 		return false;
@@ -1359,7 +1353,7 @@ int CvPlayerTechs::GetResearchTurnsLeftTimes100(TechTypes eTech, bool bOverflow)
 				if((iI == m_pPlayer->GetID()) || kPlayer.GetPlayerTechs()->GetCurrentResearch() == eTech)
 				{
 					iResearchRate += kPlayer.GetScienceTimes100();
-					iOverflow += (kPlayer.getOverflowResearch() * m_pPlayer->calculateResearchModifier(eTech)) / 100;
+					iOverflow += ((kPlayer.getOverflowResearch() + kPlayer.GetResearchStorage()) * m_pPlayer->calculateResearchModifier(eTech)) / 100;
 				}
 			}
 		}
@@ -1749,7 +1743,7 @@ void CvTeamTechs::Read(FDataStream& kStream)
 			// Next is an array of the tech IDs that were available when the save was made.
 			CvAssert(m_pTechs == GC.GetGameTechs());	// The hash to indices conversion will convert the hash to the index in the main game techs array, so these better be the same.
 			int* paTechIDs = (int*)_malloca(iNumSavedTechs * sizeof(int));
-			CvInfosSerializationHelper::ReadHashedTypeArray(kStream, iNumActiveTechs, paTechIDs, iNumSavedTechs);
+			CvInfosSerializationHelper::ReadHashedTypeArray(kStream, iNumSavedTechs, paTechIDs, iNumSavedTechs);
 
 			CvInfosSerializationHelper::ReadAndRemapDataArray(kStream, iNumSavedTechs, m_pabHasTech, iNumActiveTechs, paTechIDs);
 			CvInfosSerializationHelper::ReadAndRemapDataArray(kStream, iNumSavedTechs, m_pabNoTradeTech, iNumActiveTechs, paTechIDs);
@@ -1971,7 +1965,7 @@ void CvTeamTechs::SetResearchProgressTimes100(TechTypes eIndex, int iNewValue, P
 
 		if(iOverflow >= 0)
 		{
-			GET_PLAYER(ePlayer).changeOverflowResearchTimes100(iOverflow);
+			GET_PLAYER(ePlayer).changeOverflowResearchTimes100(iOverflow/100);
 			m_pTeam->setHasTech(eIndex, true, ePlayer, true, true);
 			SetNoTradeTech(eIndex, true);
 
