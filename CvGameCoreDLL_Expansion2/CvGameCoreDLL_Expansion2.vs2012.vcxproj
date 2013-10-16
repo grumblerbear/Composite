@@ -78,6 +78,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CvCityManager.cpp" />
+    <ClCompile Include="CvTargeting.cpp" />
     <ClCompile Include="_precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -260,6 +262,7 @@
     <ClInclude Include="CvCityAI.h" />
     <ClInclude Include="CvCityCitizens.h" />
     <ClInclude Include="CvCityConnections.h" />
+    <ClInclude Include="CvCityManager.h" />
     <ClInclude Include="CvCitySpecializationAI.h" />
     <ClInclude Include="CvCityStrategyAI.h" />
     <ClInclude Include="CvCultureClasses.h" />
@@ -323,6 +326,7 @@
     <ClInclude Include="CvStructs.h" />
     <ClInclude Include="CvTacticalAI.h" />
     <ClInclude Include="CvTacticalAnalysisMap.h" />
+    <ClInclude Include="CvTargeting.h" />
     <ClInclude Include="CvTeam.h" />
     <ClInclude Include="CvTechAI.h" />
     <ClInclude Include="CvTechClasses.h" />

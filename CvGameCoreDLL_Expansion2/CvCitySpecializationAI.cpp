@@ -15,6 +15,7 @@
 #include "CvMilitaryAI.h"
 #include "CvEnumSerialization.h"
 #include "CvWonderProductionAI.h"
+#include "cvStopWatch.h"
 
 // must be included after all other headers
 #include "LintFree.h"
@@ -302,6 +303,8 @@ CvCitySpecializationXMLEntries* CvCitySpecializationAI::GetCitySpecializations()
 /// Called every turn to see what Strategies this player should using (or not)
 void CvCitySpecializationAI::DoTurn()
 {
+	AI_PERF_FORMAT("AI-perf.csv", ("CvCitySpecializationAI::DoTurn, Turn %03d, %s", GC.getGame().getElapsedGameTurns(), GetPlayer()->getCivilizationShortDescription()) );
+
 	int iCityLoop = 0;
 
 	// No city specializations for humans!
